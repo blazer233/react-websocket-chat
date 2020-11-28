@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReconnectingWebsocket from "reconnectingwebsocket";
-import { combin_action } from "./store/action";
+import { combin_action, group_action } from "./store/action";
+
 import { connect } from "react-redux";
 import "./App.css";
 import "antd/dist/antd.css";
@@ -11,7 +12,6 @@ const statusLINK = {
   type: "CONNECTION",
   data: "link",
 };
-// E:\websocket-react\my-app\src\img\1.jpg
 let imgArr = [
   require("./assets/img/1.jpg"),
   require("./assets/img/2.jpg"),
@@ -19,7 +19,7 @@ let imgArr = [
   require("./assets/img/4.jpg"),
   require("./assets/img/5.jpg"),
 ];
-function App({ history, combin_action }) {
+function App({ history, combin_action, group_action }) {
   const [current, setCurrent] = useState(0);
   const [userName, setUserName] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -35,27 +35,32 @@ function App({ history, combin_action }) {
   const initWs = () => {
     ws = new ReconnectingWebsocket("ws:localhost:8081");
     ws.onopen = () => {
+      console.log(ws);
       ws.send(JSON.stringify(statusLINK));
-      ws.onmessage = ({ data }) =>
-        showMessage(JSON.parse(data).type, JSON.parse(data).message);
-      ws.send(JSON.stringify({ type: "LOGIN", userName }));
+      ws.onmessage = ({ data }) => {
+        console.log(JSON.parse(data));
+        const { type, message, userinfo } = JSON.parse(data);
+        showMessage(type, message, userinfo);
+      };
+      ws.send(JSON.stringify({ type: "LOGIN", userName, avatar }));
       ws.onerror = error => console.log(error);
     };
   };
-  const showMessage = (type, msg) => {
+  const showMessage = (type, msg, userinfo) => {
     if (type === "LOGIN_SUCCESS") {
       history.push({ pathname: "/chatRoom" });
       combin_action({ ws, userName, avatar });
+      group_action(userinfo);
       ws.send(
         JSON.stringify({
           type: "JOININ",
           userName,
+          avatar,
         })
       );
     }
     if (type !== "LOGIN_SUCCESS") {
-      type.includes("FAIL") && message.error(msg);
-      message.info(msg);
+      type.includes("FAIL") ? message.error(msg) : message.info(msg);
     }
   };
   const handleDomShow = () => {
@@ -131,4 +136,5 @@ function App({ history, combin_action }) {
 
 export default connect(store => store, {
   combin_action,
+  group_action,
 })(App);

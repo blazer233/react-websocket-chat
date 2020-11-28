@@ -4,3 +4,8 @@ export const combin_action = ({ ws, userName, avatar }) => ({
   userName,
   avatar,
 });
+
+export const group_action = userinfos => ({
+  type: "GROUP",
+  userinfos,
+});

@@ -6,13 +6,14 @@ const server = app.listen(8081, () => console.log(`Listening on ${8081}`));
 const wss = new SocketServer({ server });
 // 定义用户的数组
 const user = [];
+const userinfo = [];
 const chatMessage = [];
 let userName = "";
 wss.on("connection", connection => {
   connection.on("message", data => {
     try {
       const wsData = JSON.parse(data);
-      console.log(wsData);
+      console.log(wsData, "wsData");
       switch (wsData.type) {
         case "LOGIN":
           // 循环当前用户数组，判断是否有这个用户
@@ -25,12 +26,15 @@ wss.on("connection", connection => {
               })
             );
           } else {
+            console.log(wsData, "userName");
             user.push(wsData.userName);
+            userinfo.push(wsData);
             userName = wsData.userName;
             connection.send(
               JSON.stringify({
                 type: "LOGIN_SUCCESS",
                 message: "登陆成功",
+                userinfo,
               })
             );
           }
@@ -59,6 +63,7 @@ wss.on("connection", connection => {
                 JSON.stringify({
                   type: "JOININ",
                   message: `${userName}加入群聊`,
+                  user,
                 })
               );
             }
@@ -72,7 +77,10 @@ wss.on("connection", connection => {
           chatMessage.push({
             userName: wsData.userName,
             msg: wsData.chatMsg,
+            // user,
+            // wsData,
           });
+          console.log(chatMessage);
           wss.clients.forEach(client => {
             if (client.readyState === webSocket.OPEN) {
               client.send(
