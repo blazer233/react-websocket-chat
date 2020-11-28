@@ -1,16 +1,12 @@
-import React, { useState } from "react";
-import ReconnectingWebsocket from "reconnectingwebsocket";
+import React, { useState, useEffect } from "react";
 import { combin_action, group_action } from "./store/action";
 import { connect } from "react-redux";
+import socket from "./socket";
 import "./App.css";
 import "antd/dist/antd.css";
 import { Steps, Input, Button, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 const { Step } = Steps;
-const statusLINK = {
-  type: "CONNECTION",
-  data: "link",
-};
 let imgArr = [
   require("./assets/img/1.jpg"),
   require("./assets/img/2.jpg"),
@@ -20,8 +16,15 @@ let imgArr = [
 ];
 function App({ history, combin_action, group_action }) {
   const [current, setCurrent] = useState(0);
+  const [client, setClient] = useState(socket() || null);
   const [userName, setUserName] = useState("");
   const [avatar, setAvatar] = useState("");
+  useEffect(() => {
+    console.log(client);
+    client.login({ userName: "userName", avatar: "avatar" }, res => {
+      console.log(res);
+    });
+  }, []);
   let ws = null;
   const handleClick = current => {
     if (current == 0) {
@@ -31,19 +34,7 @@ function App({ history, combin_action, group_action }) {
       initWs();
     }
   };
-  const initWs = () => {
-    ws = new ReconnectingWebsocket("ws:localhost:8081");
-    ws.onopen = () => {
-      combin_action({ ws, userName, avatar });
-      ws.send(JSON.stringify(statusLINK));
-      ws.onmessage = ({ data }) => {
-        const { type, message, userinfo } = JSON.parse(data);
-        showMessage(type, message, userinfo);
-      };
-      ws.send(JSON.stringify({ type: "LOGIN", userName, avatar }));
-      ws.onerror = error => console.log(error);
-    };
-  };
+  const initWs = () => {};
   const showMessage = (type, msg, userinfo) => {
     if (type === "LOGIN_SUCCESS") {
       history.push({ pathname: "/chatRoom" });
