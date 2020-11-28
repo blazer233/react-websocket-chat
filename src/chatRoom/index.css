@@ -111,11 +111,30 @@
   border-radius: 5px;
   padding: 5px;
 }
+.chat_img {
+  width: 40px;
+  height: 40px;
+}
+.chat_groupR {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.chat_groupL {
+  display: flex;
+}
 .rightLabel {
   background: #bcee68;
+  margin-right: 10px;
+}
+.leftLabel {
+  margin-left: 10px;
 }
 .parentLabel {
   display: flex;
+  margin: 1rem;
   justify-content: flex-end;
-  /* flex-direction: column; */
+}
+
+.parentLabel {
+  margin: 1rem;
 }

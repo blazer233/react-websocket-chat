@@ -1,5 +1,5 @@
 const defaultState = {
-  ws: null,
+  ws: {},
   userName: "",
   avatar: "",
   userinfos: [],

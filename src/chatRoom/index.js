@@ -1,23 +1,24 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import "./index.css";
 import { HandleChatList, Avatars } from "./components";
 import { connect } from "react-redux";
 import { Input, message } from "antd";
 
-function ChatRoom({ ws, userName, avatar, userinfos }) {
+function ChatRoom({ ws: wws, userName, avatar, userinfos }) {
   const area = useRef();
   const [chatMsg, setChatMsg] = useState("");
-  const [tip, setTip] = useState("tip");
+  const [tip, setTip] = useState(new Date().toLocaleDateString());
+  const [ws, setws] = useState({});
   const [chatList, setChatList] = useState([]);
   useLayoutEffect(() => {
-    ws && initWs();
+    wws && initWs();
     area.current.scrollTop = area.current.scrollHeight;
-  }, [ws]);
+  }, [JSON.stringify(ws)]);
   const initWs = () => {
-    ws.onmessage = msg => {
+    wws.onmessage = msg => {
+      setws(wws);
       const data = JSON.parse(msg.data);
       if (data.type === "CHAT") {
-        console.log(data, `ws.onmessage`);
         setChatList(data.message);
         return;
       }
@@ -26,15 +27,14 @@ function ChatRoom({ ws, userName, avatar, userinfos }) {
     ws.onerror = error => console.log(error);
   };
   const onsubmit = () => {
-    console.log(ws);
-    ws.send &&
-      ws.send(
-        JSON.stringify({
-          type: "CHAT",
-          userName,
-          chatMsg,
-        })
-      );
+    ws.send(
+      JSON.stringify({
+        type: "CHAT",
+        userName,
+        chatMsg,
+        avatar,
+      })
+    );
     setChatMsg("");
     area.current.scrollTop = area.current.scrollHeight;
   };

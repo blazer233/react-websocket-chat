@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReconnectingWebsocket from "reconnectingwebsocket";
 import { combin_action, group_action } from "./store/action";
-
 import { connect } from "react-redux";
 import "./App.css";
 import "antd/dist/antd.css";
@@ -35,10 +34,9 @@ function App({ history, combin_action, group_action }) {
   const initWs = () => {
     ws = new ReconnectingWebsocket("ws:localhost:8081");
     ws.onopen = () => {
-      console.log(ws);
+      combin_action({ ws, userName, avatar });
       ws.send(JSON.stringify(statusLINK));
       ws.onmessage = ({ data }) => {
-        console.log(JSON.parse(data));
         const { type, message, userinfo } = JSON.parse(data);
         showMessage(type, message, userinfo);
       };
@@ -49,7 +47,6 @@ function App({ history, combin_action, group_action }) {
   const showMessage = (type, msg, userinfo) => {
     if (type === "LOGIN_SUCCESS") {
       history.push({ pathname: "/chatRoom" });
-      combin_action({ ws, userName, avatar });
       group_action(userinfo);
       ws.send(
         JSON.stringify({

@@ -4,7 +4,6 @@ import App from "../App";
 import chatRoom from "../chatRoom";
 import { connect } from "react-redux";
 const myRouter = ({ ws, userName }) => {
-  console.log(ws, userName);
   return (
     <BrowserRouter>
       <Route component={App} path="/App"></Route>

@@ -6,7 +6,7 @@ export const HandleChatList = ({ userName, chatList }) =>
   chatList.map((item, index) => (
     <div
       key={index}
-      className={userName === item.userName ? "parentLabel" : ""}
+      className={userName === item.userName ? "parentLabel" : "otherLabel"}
     >
       <div>
         <div
@@ -17,11 +17,16 @@ export const HandleChatList = ({ userName, chatList }) =>
           {item.userName}
         </div>
         <div
-          className={`chat__message ${
-            userName === item.userName ? "rightLabel" : "leftLabel"
-          }`}
+          className={userName === item.userName ? "chat_groupR" : "chat_groupL"}
         >
-          {item.msg}
+          <img src={item.avatar} className="chat_img" />
+          <div
+            className={`chat__message ${
+              userName === item.userName ? "rightLabel" : "leftLabel"
+            }`}
+          >
+            {item.msg}
+          </div>
         </div>
       </div>
     </div>

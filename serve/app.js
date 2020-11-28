@@ -25,6 +25,13 @@ wss.on("connection", connection => {
                 message: "用户名发生重复，请重新尝试！",
               })
             );
+          } else if (user.length == 12) {
+            connection.send(
+              JSON.stringify({
+                type: "LOGIN_full",
+                message: "连接数已满",
+              })
+            );
           } else {
             console.log(wsData, "userName");
             user.push(wsData.userName);
@@ -77,8 +84,7 @@ wss.on("connection", connection => {
           chatMessage.push({
             userName: wsData.userName,
             msg: wsData.chatMsg,
-            // user,
-            // wsData,
+            avatar: wsData.avatar,
           });
           console.log(chatMessage);
           wss.clients.forEach(client => {
