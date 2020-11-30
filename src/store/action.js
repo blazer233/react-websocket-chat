@@ -9,3 +9,10 @@ export const group_action = userinfos => ({
   type: "GROUP",
   userinfos,
 });
+
+export const sendText = ({ userName, avatar, chatMsg }) => ({
+  type: "CHAT",
+  userName,
+  avatar,
+  chatMsg,
+});

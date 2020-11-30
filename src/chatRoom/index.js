@@ -1,10 +1,11 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import "./index.css";
 import { HandleChatList, Avatars } from "./components";
+import { sendText } from "../store/reducer/sendMsg";
 import { connect } from "react-redux";
 import { Input, message } from "antd";
 
-function ChatRoom({ ws: wws, userName, avatar, userinfos }) {
+function ChatRoom({ ws: wws, userName, avatar, userinfos, sendText }) {
   const area = useRef();
   const [chatMsg, setChatMsg] = useState("");
   const [tip, setTip] = useState(new Date().toLocaleDateString());
@@ -27,6 +28,14 @@ function ChatRoom({ ws: wws, userName, avatar, userinfos }) {
     ws.onerror = error => console.log(error);
   };
   const onsubmit = () => {
+    // sendText(
+    //   JSON.stringify({
+    //     type: "CHAT",
+    //     userName,
+    //     chatMsg,
+    //     avatar,
+    //   })
+    // );
     ws.send(
       JSON.stringify({
         type: "CHAT",
@@ -72,4 +81,4 @@ function ChatRoom({ ws: wws, userName, avatar, userinfos }) {
   );
 }
 
-export default connect(store => store, {})(ChatRoom);
+export default connect(store => store.combine, { sendText })(ChatRoom);

@@ -5,16 +5,15 @@ const defaultState = {
   userinfos: [],
 };
 export default (state = defaultState, action) => {
-  const newState = JSON.parse(JSON.stringify(state));
   if (action.type === "SAVE_WS") {
-    return { ...newState, ws: action.ws };
+    return { ...state, ws: action.ws };
   }
   if (action.type === "GROUP") {
-    return { ...newState, userinfos: action.userinfos };
+    return { ...state, userinfos: action.userinfos };
   }
   if (action.type === "COMBINE") {
     return {
-      ...newState,
+      ...state,
       userName: action.userName,
       ws: action.ws,
       avatar: action.avatar,
