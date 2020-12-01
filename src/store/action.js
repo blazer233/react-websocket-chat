@@ -1,3 +1,8 @@
+const setChatList = message => ({
+  type: "CHATLIST",
+  message,
+});
+
 export const combin_action = ({ ws, userName, avatar }) => ({
   type: "COMBINE",
   ws,
@@ -10,9 +15,7 @@ export const group_action = userinfos => ({
   userinfos,
 });
 
-export const sendText = ({ userName, avatar, chatMsg }) => ({
-  type: "CHAT",
-  userName,
-  avatar,
-  chatMsg,
-});
+export const sendText = arg => async getState => {
+  const { ws } = getState().combine;
+  ws.send(JSON.stringify(arg));
+};

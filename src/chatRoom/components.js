@@ -27,6 +27,11 @@ export const HandleChatList = ({ userName, chatList }) =>
           >
             {item.msg}
           </div>
+          <span
+            className={
+              userName === item.userName ? "span_icon_right" : "span_icon_left"
+            }
+          ></span>
         </div>
       </div>
     </div>
