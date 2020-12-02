@@ -15,6 +15,14 @@ wss.on("connection", connection => {
       const wsData = JSON.parse(data);
       console.log(wsData, "wsData");
       switch (wsData.type) {
+        case "CONNECTION":
+          connection.send(
+            JSON.stringify({
+              type: "CONNECTION_SUCCESS",
+              message: "连接成功",
+            })
+          );
+          break;
         case "LOGIN":
           // 循环当前用户数组，判断是否有这个用户
           let isReply = user.filter(item => item == wsData.userName);
@@ -46,14 +54,6 @@ wss.on("connection", connection => {
             );
           }
           break;
-        case "CONNECTION":
-          connection.send(
-            JSON.stringify({
-              type: "CONNECTION_SUCCESS",
-              message: "连接成功",
-            })
-          );
-          break;
         case "LOGINOUT":
           // user.splice(user.find(wsData.userName));
           connection.send(
@@ -81,6 +81,11 @@ wss.on("connection", connection => {
           );
           break;
         case "CHAT":
+          // chatMessage.push({
+          //   userName: wsData.userName,
+          //   msg: wsData.chatMsg,
+          //   avatar: wsData.avatar,
+          // });
           chatMessage.push({
             userName: wsData.userName,
             msg: wsData.chatMsg,
@@ -92,7 +97,7 @@ wss.on("connection", connection => {
               client.send(
                 JSON.stringify({
                   type: "CHAT",
-                  message: chatMessage,
+                  chatMessage,
                 })
               );
             }

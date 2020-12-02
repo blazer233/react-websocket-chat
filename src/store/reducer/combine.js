@@ -1,12 +1,15 @@
+import ReconnectingWebsocket from "reconnectingwebsocket";
 const defaultState = {
-  ws: {},
+  ws: new ReconnectingWebsocket("ws:localhost:8081"),
   userName: "",
   avatar: "",
   userinfos: [],
+  messageAlert: "",
+  status: null,
 };
 export default (state = defaultState, action) => {
-  if (action.type === "SAVE_WS") {
-    return { ...state, ws: action.ws };
+  if (action.type === "CHANGESTATUS") {
+    return { ...state, messageAlert: action.message, status: action.status };
   }
   if (action.type === "GROUP") {
     return { ...state, userinfos: action.userinfos };
@@ -15,8 +18,9 @@ export default (state = defaultState, action) => {
     return {
       ...state,
       userName: action.userName,
-      ws: action.ws,
       avatar: action.avatar,
+      status: action.status,
+      messageAlert: action.message,
     };
   }
   return defaultState;

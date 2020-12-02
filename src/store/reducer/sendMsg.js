@@ -1,18 +1,17 @@
 const defaultState = {
   message: "",
+  ChatList: [],
 };
-export const sendText = (state = defaultState, action) => {
+export default (state = defaultState, action) => {
   if (action.type === "CHATLIST") {
     return {
       ...state,
       message: action.message,
     };
-  } else if (action.type === "sendImg") {
+  } else if (action.type === "INITCHAT") {
     return {
       ...state,
-      userName: action.userName,
-      chatMsg: action.chatMsg,
-      avatar: action.avatar,
+      ChatList: action.ChatList,
     };
   }
   return defaultState;

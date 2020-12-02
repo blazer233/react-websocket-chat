@@ -48,6 +48,11 @@
 .chatroom__single span {
   color: cadetblue;
   margin-top: -1rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 4rem;
+  text-align: center;
 }
 .list__content {
   flex: 2;
@@ -109,8 +114,9 @@
   width: auto;
   box-shadow: 1px 1px 2px #ececec;
   border-radius: 5px;
-  padding: 1rem;
+  padding: 5px;
   word-break: break-all;
+  height: 2rem;
 }
 .chat_img {
   width: 40px;
@@ -143,17 +149,6 @@
   right: 80px;
   border-width: 15px 0px 10px 10px;
   border-left-color: #bcee68;
-}
-
-.span_icon_left {
-  /* position: absolute;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-style: solid;
-  left: -5px;
-  border-width: 15px 0px 10px 10px;
-  border-left-color: #bcee68; */
 }
 .parentLabel {
   margin: 1rem;
