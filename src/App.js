@@ -56,7 +56,7 @@ const App = ({
 };
 
 export default connect(
-  store => ({ message: store.message.message, status: store.combine.status }),
+  ({ message: { message }, combine: { status } }) => ({ message, status }),
   {
     initSocket,
     enterSocket,

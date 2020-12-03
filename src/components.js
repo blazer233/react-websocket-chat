@@ -37,7 +37,7 @@ export const HandleChatList = ({ userName, chatList, area }) =>
               userName == item.userName ? "rightLabel" : "leftLabel"
             }`}
           >
-            {item.msg.startsWith("blob:http://localhost:3002") ? (
+            {item.msg.startsWith("blob:http://localhost") ? (
               <img src={item.msg} className="img-src" />
             ) : (
               item.msg
