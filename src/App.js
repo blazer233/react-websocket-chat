@@ -5,7 +5,13 @@ import "./App.css";
 import "antd/dist/antd.css";
 import { message } from "antd";
 import { HandleDomShow, NextButton, StepsDom } from "./components";
-const App = ({ history, status, initSocket, messageAlert, enterSocket }) => {
+const App = ({
+  history,
+  initSocket,
+  enterSocket,
+  status,
+  message: messageAlert,
+}) => {
   const [current, setCurrent] = useState(0);
   const [userName, setUserName] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -49,7 +55,10 @@ const App = ({ history, status, initSocket, messageAlert, enterSocket }) => {
   );
 };
 
-export default connect(store => store.combine, {
-  initSocket,
-  enterSocket,
-})(App);
+export default connect(
+  store => ({ message: store.message.message, status: store.combine.status }),
+  {
+    initSocket,
+    enterSocket,
+  }
+)(App);

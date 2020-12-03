@@ -1,5 +1,5 @@
 export default ({ dispatch, getState }) => next => action =>
-  typeof action === "function" ? action(dispatch, getState) : next(action);
+  typeof action == "function" ? action(dispatch, getState) : next(action);
 //fn(store)(store.dispatch)(action)
 /**
  * action 是个 function ，就故意执行 action , 而不执行 next(action) ,

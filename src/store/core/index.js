@@ -1,5 +1,5 @@
 export const createStore = (reducer, defaultstate, enhancer) => {
-  if (typeof defaultstate === "function" && typeof enhancer === "undefined") {
+  if (typeof defaultstate == "function" && typeof enhancer == "undefined") {
     enhancer = defaultstate;
     defaultstate = undefined;
   }

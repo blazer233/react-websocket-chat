@@ -5,7 +5,6 @@ const SocketServer = require("ws").Server;
 const server = app.listen(8081, () => console.log(`Listening on ${8081}`));
 const wss = new SocketServer({ server });
 // 定义用户的数组
-const user = [];
 const userinfo = [];
 const chatMessage = [];
 let userName = "";
@@ -25,7 +24,9 @@ wss.on("connection", connection => {
           break;
         case "LOGIN":
           // 循环当前用户数组，判断是否有这个用户
-          let isReply = user.filter(item => item == wsData.userName);
+          let isReply = userinfo.filter(
+            item => item.userName == wsData.userName
+          );
           if (!isReply || isReply.length) {
             connection.send(
               JSON.stringify({
@@ -33,7 +34,7 @@ wss.on("connection", connection => {
                 message: "用户名发生重复，请重新尝试！",
               })
             );
-          } else if (user.length == 12) {
+          } else if (userinfo.length == 12) {
             connection.send(
               JSON.stringify({
                 type: "LOGIN_full",
@@ -42,7 +43,6 @@ wss.on("connection", connection => {
             );
           } else {
             console.log(wsData, "userName");
-            user.push(wsData.userName);
             userinfo.push(wsData);
             userName = wsData.userName;
             connection.send(
@@ -65,27 +65,20 @@ wss.on("connection", connection => {
           break;
         case "JOININ":
           wss.clients.forEach(client => {
-            if (client.readyState === webSocket.OPEN) {
+            if (client.readyState == webSocket.OPEN) {
               client.send(
                 JSON.stringify({
                   type: "JOININ",
                   message: `${userName}加入群聊`,
-                  user,
+                  userinfo,
                 })
               );
             }
           });
           // 每个用户登陆的时候，向他推送当前的聊天记录
-          connection.send(
-            JSON.stringify({ type: "CHAT", message: chatMessage })
-          );
+          connection.send(JSON.stringify({ type: "CHAT", chatMessage }));
           break;
         case "CHAT":
-          // chatMessage.push({
-          //   userName: wsData.userName,
-          //   msg: wsData.chatMsg,
-          //   avatar: wsData.avatar,
-          // });
           chatMessage.push({
             userName: wsData.userName,
             msg: wsData.chatMsg,
@@ -93,7 +86,7 @@ wss.on("connection", connection => {
           });
           console.log(chatMessage);
           wss.clients.forEach(client => {
-            if (client.readyState === webSocket.OPEN) {
+            if (client.readyState == webSocket.OPEN) {
               client.send(
                 JSON.stringify({
                   type: "CHAT",

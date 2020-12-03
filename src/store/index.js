@@ -1,12 +1,7 @@
-import { createStore, applyMiddleware } from "./core";
-import combineReducers from "./core/combineReducers";
+import { createStore, applyMiddleware, compose } from "./core";
 import thunk from "./core/thunk";
-import combine from "./reducer/combine";
-import sendmsg from "./reducer/sendMsg";
+import reducer from "./reducer";
 import logger from "redux-logger";
-const reducer = combineReducers({
-  combine,
-  sendmsg,
-});
-const store = createStore(reducer, applyMiddleware(thunk, logger));
+
+const store = createStore(reducer, compose(applyMiddleware(thunk, logger)));
 export default store;

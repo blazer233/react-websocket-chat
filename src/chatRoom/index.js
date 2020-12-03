@@ -1,29 +1,30 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { HandleChatList, Avatars } from "../components";
-import { sendText } from "../store/action/RoomAction";
+import { initChat } from "../store/action/RoomAction";
+import { sendText } from "../store/action/ChatAction";
 import { connect } from "react-redux";
 import { Input, message } from "antd";
 import "./index.css";
 
-function ChatRoom({ ws, userName, avatar, userinfos, sendText }) {
+function ChatRoom({
+  userName,
+  avatar,
+  userinfos,
+  initChat,
+  message: messageAlert,
+  chatList,
+  sendText,
+}) {
   const area = useRef();
   const [chatMsg, setChatMsg] = useState("");
   const [tip, setTip] = useState(new Date().toLocaleDateString());
-  const [chatList, setChatList] = useState([]);
   useLayoutEffect(() => {
-    ws && initWs();
+    initChat();
     area.current.scrollTop = area.current.scrollHeight;
-  }, []);
-  const initWs = () => {
-    ws.onmessage = ({ data }) => {
-      const { type, chatMessage } = JSON.parse(data);
-      if (type === "CHAT") {
-        setChatList(chatMessage);
-        return;
-      }
-    };
-    ws.onerror = error => console.log(error);
-  };
+  }, [initChat]);
+  useEffect(() => {
+    messageAlert && message.info(messageAlert);
+  }, [messageAlert]);
   const onsubmit = () => {
     sendText({
       type: "CHAT",
@@ -63,5 +64,16 @@ function ChatRoom({ ws, userName, avatar, userinfos, sendText }) {
     </div>
   );
 }
-
-export default connect(store => store.combine, { sendText })(ChatRoom);
+export default connect(
+  store => ({
+    chatList: store.sendmsg.chatList,
+    avatar: store.combine.avatar,
+    userName: store.combine.userName,
+    userinfos: store.message.userinfos,
+    message: store.message.message,
+  }),
+  {
+    initChat,
+    sendText,
+  }
+)(ChatRoom);
