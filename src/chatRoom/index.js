@@ -1,9 +1,10 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
-import { HandleChatList, Avatars } from "../components";
-import { initChat } from "../store/action/RoomAction";
+import { HandleChatList, Avatars, comthings } from "../components";
+import { initChat, exitChat } from "../store/action/RoomAction";
 import { sendText } from "../store/action/ChatAction";
 import { connect } from "react-redux";
-import { Input, message } from "antd";
+import { FileImageOutlined } from "@ant-design/icons";
+import { Input, message, Button } from "antd";
 import "./index.css";
 
 function ChatRoom({
@@ -14,17 +15,31 @@ function ChatRoom({
   message: messageAlert,
   chatList,
   sendText,
+  exitChat,
 }) {
   const area = useRef();
+  const chooseimg = useRef();
   const [chatMsg, setChatMsg] = useState("");
   const [tip, setTip] = useState(new Date().toLocaleDateString());
   useLayoutEffect(() => {
     initChat();
-    area.current.scrollTop = area.current.scrollHeight;
-  }, [initChat]);
-  useEffect(() => {
     messageAlert && message.info(messageAlert);
-  }, [messageAlert]);
+    console.log(area);
+
+    area.current && area.current.scrollIntoView();
+  }, [initChat, messageAlert]);
+  // useEffect(() => {
+  //   const listener = ev => {
+  //     ev.preventDefault();
+  //     exitChat();
+  //     ev.returnValue = "";
+  //   };
+  //   window.addEventListener("beforeunload", listener);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", listener);
+  //   };
+  // }, []);
+
   const onsubmit = () => {
     sendText({
       type: "CHAT",
@@ -33,7 +48,18 @@ function ChatRoom({
       avatar,
     });
     setChatMsg("");
-    area.current.scrollTop = area.current.scrollHeight;
+    area.current.scrollIntoView();
+  };
+  const setImage = e => {
+    const file = e.target.files[0];
+    if (!file.type.includes("image/")) return;
+    sendText({
+      type: "CHAT",
+      chatMsg: window.URL.createObjectURL(file),
+      userName,
+      avatar,
+    });
+    area.current.scrollIntoView();
   };
 
   return (
@@ -46,13 +72,34 @@ function ChatRoom({
         <div className="list__name">
           <span>{userName}</span>
         </div>
-        <div className="list__item" ref={area}>
+        <div className="list__item">
           <div className="list__tip">{tip}</div>
           <div>
-            <HandleChatList chatList={chatList} userName={userName} />
+            <HandleChatList
+              chatList={chatList}
+              userName={userName}
+              area={area}
+            />
           </div>
         </div>
         <div className="list__input">
+          <div className="things-content">
+            <FileImageOutlined
+              className="icon-img"
+              onClick={() =>
+                chooseimg.current.dispatchEvent(new MouseEvent("click"))
+              }
+            />
+            <input
+              className="crop-input"
+              ref={chooseimg}
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={setImage}
+            />
+          </div>
+
           <Input
             value={chatMsg}
             className="list__input--area"
@@ -75,5 +122,6 @@ export default connect(
   {
     initChat,
     sendText,
+    exitChat,
   }
 )(ChatRoom);

@@ -31,7 +31,7 @@ wss.on("connection", connection => {
             connection.send(
               JSON.stringify({
                 type: "LOGIN_FAIL",
-                message: "用户名发生重复，请重新尝试！",
+                message: "用户名发生重复，请重新尝试！", 
               })
             );
           } else if (userinfo.length == 12) {
@@ -42,7 +42,6 @@ wss.on("connection", connection => {
               })
             );
           } else {
-            console.log(wsData, "userName");
             userinfo.push(wsData);
             userName = wsData.userName;
             connection.send(
@@ -55,15 +54,18 @@ wss.on("connection", connection => {
           }
           break;
         case "LOGINOUT":
-          // user.splice(user.find(wsData.userName));
+          userinfo.splice(userinfo.indexOf(wsData.userName));
+          console.log(userinfo, "LOGINOUT");
           connection.send(
             JSON.stringify({
               type: "LOGINOUT",
               message: `${userName}退出群聊`,
+              userinfo,
             })
           );
           break;
         case "JOININ":
+          console.log(userinfo, "userName");
           wss.clients.forEach(client => {
             if (client.readyState == webSocket.OPEN) {
               client.send(

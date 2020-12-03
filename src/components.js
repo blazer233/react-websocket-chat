@@ -9,13 +9,15 @@ let imgArr = [
   require("./assets/img/4.jpg"),
   require("./assets/img/5.jpg"),
 ];
+export const comthings = () => {};
 export const emoji = "😄 😃 😀 😊 😉 😍 😘 😚 😗 😙 😜 😝 😛 😳 😁 😔 😌 😒 😞 😣 😢 😂 😭 😪 😥 😰 😅 😓 😩 😫 😨 😱 😠 😡 😤 😖 😆 😋 😷 😎 😴 😵 😲 😟 😦 😧 😈 👿 😮 😬 😐 😕 😯 😶 😇 😏 😑 👲 👳 👮 👷 💂 👶 👦 👧 👨 👩 👴 👵 👱 👼 👸 😺 😸 😻 😽 😼 🙀 😿 😹 😾 👹 👺 🙈 🙉 🙊 💀 👽 💩 🔥 ✨ 🌟 💫 💥 💢 💦 💧 💤 💨 💛".split(
   " "
 );
-export const HandleChatList = ({ userName, chatList }) =>
+export const HandleChatList = ({ userName, chatList, area }) =>
   chatList.map((item, index) => (
     <div
       key={index}
+      ref={area}
       className={userName == item.userName ? "parentLabel" : "otherLabel"}
     >
       <div>
@@ -35,7 +37,11 @@ export const HandleChatList = ({ userName, chatList }) =>
               userName == item.userName ? "rightLabel" : "leftLabel"
             }`}
           >
-            {item.msg}
+            {item.msg.startsWith("blob:http://localhost:3002") ? (
+              <img src={item.msg} className="img-src" />
+            ) : (
+              item.msg
+            )}
           </div>
           <span
             className={
