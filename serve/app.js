@@ -9,6 +9,7 @@ const userinfo = [];
 const chatMessage = [];
 let userName = "";
 wss.on("connection", connection => {
+  console.log(connection._socket.server._connections);
   connection.on("message", data => {
     try {
       const wsData = JSON.parse(data);
@@ -31,7 +32,7 @@ wss.on("connection", connection => {
             connection.send(
               JSON.stringify({
                 type: "LOGIN_FAIL",
-                message: "用户名发生重复，请重新尝试！", 
+                message: "用户名发生重复，请重新尝试！",
               })
             );
           } else if (userinfo.length == 12) {
@@ -54,15 +55,15 @@ wss.on("connection", connection => {
           }
           break;
         case "LOGINOUT":
-          userinfo.splice(userinfo.indexOf(wsData.userName));
-          console.log(userinfo, "LOGINOUT");
+          console.log(userinfo, wsData, "123");
           connection.send(
             JSON.stringify({
               type: "LOGINOUT",
               message: `${userName}退出群聊`,
-              userinfo,
+              userinfo: userinfo.filter(i => i.userName !== wsData.userName),
             })
           );
+
           break;
         case "JOININ":
           console.log(userinfo, "userName");
@@ -102,4 +103,12 @@ wss.on("connection", connection => {
       console.log(err);
     }
   });
+  // connection.close("close", close => {
+  //   try {
+  //     console.log(close);
+  //     // wss.broadcast(0, this.user.name);
+  //   } catch (e) {
+  //     console.log("刷新页面了");
+  //   }
+  // });
 });

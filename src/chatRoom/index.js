@@ -28,17 +28,18 @@ function ChatRoom({
 
     area.current && area.current.scrollIntoView();
   }, [initChat, messageAlert]);
-  // useEffect(() => {
-  //   const listener = ev => {
-  //     ev.preventDefault();
-  //     exitChat();
-  //     ev.returnValue = "";
-  //   };
-  //   window.addEventListener("beforeunload", listener);
-  //   return () => {
-  //     window.removeEventListener("beforeunload", listener);
-  //   };
-  // }, []);
+  useEffect(() => {
+    const listener = ev => {
+      ev.preventDefault();
+      exitChat();
+      window.localStorage.setItem(1, 2);
+      ev.returnValue = "";
+    };
+    window.addEventListener("beforeunload", listener);
+    return () => {
+      window.removeEventListener("beforeunload", listener);
+    };
+  }, []);
 
   const onsubmit = () => {
     sendText({
@@ -73,6 +74,7 @@ function ChatRoom({
           <span>{userName}</span>
         </div>
         <div className="list__item">
+          <button onClick={() => exitChat()}>退出</button>
           <div className="list__tip">{tip}</div>
           <div>
             <HandleChatList

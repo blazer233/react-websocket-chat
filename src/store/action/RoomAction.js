@@ -25,10 +25,11 @@ export const initChat = () => (dispatch, getState) => {
 };
 
 export const exitChat = () => (dispatch, getState) => {
-  const { ws } = getState().combine;
+  const { ws, userName } = getState().combine;
   ws.send(
     JSON.stringify({
       type: "LOGINOUT",
+      userName,
     })
   );
   ws.onmessage = ({ data }) => {
